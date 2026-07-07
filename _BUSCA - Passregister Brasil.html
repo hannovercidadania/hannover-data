@@ -264,8 +264,7 @@ const FIELDS=["consulado", "periodo", "nr", "nome", "profissao", "nacionalidade"
 const CONSULADOS=["Recife", "Bahia", "Belém", "Joinville", "Juiz de Fora", "Porto Alegre", "Rio de Janeiro", "Rio Grande do Sul", "Santos", "São Francisco do Sul", "São Paulo"];
 var DATA=[];
 var NORM=[];
-var CARREGADO=false, CARREGANDO=false;
-var MIN_CHARS=2, LIMITE_SEM_TERMO=300, TOTAL_BASE=36275;
+var TOTAL_BASE=36275;
 const F={};FIELDS.forEach((f,i)=>F[f]=i);
 const BADGE={'Porto Alegre':'badge-poa','Rio de Janeiro':'badge-rj','São Paulo':'badge-sp','Recife':'badge-rec','Belém':'badge-bel','Joinville':'badge-joi','Juiz de Fora':'badge-jf','Santos':'badge-san','Bahia':'badge-bah','Rio Grande do Sul':'badge-rgs','São Francisco do Sul':'badge-sfs'};
 const FLAGCLS={'Alemão':'flag-de','Austríaco':'flag-at','Estrangeiro':'flag-for','Estrangeiro (visto)?':'flag-vfor','Verificar':'flag-verif'};
@@ -297,30 +296,11 @@ function cellVal(r,key){
   if(key==='folio')return g(r,'folio');
   return '';
 }
-function mensagemInicial(){
-  return 'Base completa: <strong>'+TOTAL_BASE.toLocaleString('pt-BR')+'</strong> registros. Digite ao menos '+MIN_CHARS+' letras do nome, ou selecione um filtro, para consultar.';
-}
-function mostrarMensagem(html){
-  document.getElementById('tabela').style.display='none';
-  semRes.style.display='block';
-  semRes.innerHTML=html;
-  pagEl.style.display='none';
-}
 function filtrar(){
   const qv=document.getElementById('busca').value.trim();
   const terms=nrm(qv).split(' ').filter(Boolean);
   const cf=selC.value;
   const ff=selF.value;
-
-  if(!CARREGADO){
-    if(!qv && !cf && !ff){
-      info.innerHTML='';
-      mostrarMensagem(mensagemInicial());
-      return;
-    }
-    carregarDados(filtrar);
-    return;
-  }
 
   const out=[];
   for(let i=0;i<DATA.length;i++){
@@ -332,12 +312,6 @@ function filtrar(){
   }
   if(SORT>=0){const k=COLS[SORT][0];out.sort((a,b)=>{const x=cellVal(DATA[a],k).toLowerCase(),y=cellVal(DATA[b],k).toLowerCase();return x<y?-DIR:x>y?DIR:0})}
   FILT=out;PAG=1;
-
-  if(out.length>LIMITE_SEM_TERMO && terms.join('').length<MIN_CHARS){
-    info.innerHTML='Encontrados <strong>'+out.length.toLocaleString('pt-BR')+'</strong> registros.';
-    mostrarMensagem('<strong>Refine sua busca</strong><p>Digite ao menos '+MIN_CHARS+' letras do nome para exibir os resultados ('+out.length.toLocaleString('pt-BR')+' registros correspondem ao filtro atual).</p>');
-    return;
-  }
 
   info.innerHTML=(qv||cf||ff)?('Encontrados <strong>'+out.length.toLocaleString('pt-BR')+'</strong> registros.'):('Base completa: <strong>'+out.length.toLocaleString('pt-BR')+'</strong> registros. Digite para buscar.');
   render();
@@ -389,25 +363,18 @@ tbody.addEventListener('click',function(e){
   d.innerHTML='<td colspan="8"><dl>'+dl+'</dl></td>';
   tr.after(d);
 });
-function carregarDados(cb){
-  if(CARREGANDO) return;
-  CARREGANDO=true;
-  mostrarMensagem('Carregando base de dados...');
-  fetch('busca-passregister.json')
-    .then(r=>r.json())
-    .then(data=>{
-      DATA=data;
-      NORM=DATA.map(r=>nrm(SEARCHF.map(f=>r[F[f]]||'').join(' ')));
-      CARREGADO=true; CARREGANDO=false;
-      if(cb) cb();
-    })
-    .catch(err=>{
-      mostrarMensagem('<strong style="color:#c00">Erro ao carregar os dados.</strong><p>Por favor, recarregue a página.</p>');
-      CARREGANDO=false;
-      console.error(err);
-    });
-}
-mostrarMensagem(mensagemInicial());
+semRes.innerHTML='Carregando base de dados...';
+fetch('busca-passregister.json')
+  .then(r=>r.json())
+  .then(data=>{
+    DATA=data;
+    NORM=DATA.map(r=>nrm(SEARCHF.map(f=>r[F[f]]||'').join(' ')));
+    filtrar();
+  })
+  .catch(err=>{
+    semRes.innerHTML='<strong style="color:#c00">Erro ao carregar os dados.</strong><p>Por favor, recarregue a página.</p>';
+    console.error(err);
+  });
 document.getElementById('hdr').addEventListener('click',e=>{const th=e.target.closest('th');if(!th)return;const i=+th.dataset.i;if(SORT===i)DIR=-DIR;else{SORT=i;DIR=1}filtrar()});
 let tmr;document.getElementById('busca').addEventListener('input',()=>{clearTimeout(tmr);tmr=setTimeout(filtrar,150)});
 selC.addEventListener('change',filtrar);

@@ -668,10 +668,6 @@ var DADOS = [];
 var FILTRADOS = [];
 var PAG_ATUAL = 1;
 var POR_PAG = 50;
-var CARREGADO = false;
-var CARREGANDO = false;
-var MIN_CHARS = 2;
-var LIMITE_SEM_TERMO = 300;
 
 var badges = {
   'Porto Alegre': 'badge-poa',
@@ -693,19 +689,6 @@ function highlight(text, query) {
     text.slice(idx + query.length);
 }
 
-function mostrarEstado(html) {
-  document.getElementById('tabela').style.display = 'none';
-  document.getElementById('sem-resultado').style.display = 'none';
-  document.getElementById('paginacao').style.display = 'none';
-  var loading = document.getElementById('loading');
-  loading.style.display = 'block';
-  loading.innerHTML = html;
-}
-
-function mensagemInicial() {
-  return '<p><strong>Digite para buscar</strong></p><p style="margin-top:8px">Informe ao menos ' + MIN_CHARS + ' letras do sobrenome, ou selecione um consulado, para consultar a base.</p>';
-}
-
 function renderTabela() {
   var tbody = document.getElementById('tbody');
   var tabela = document.getElementById('tabela');
@@ -719,11 +702,6 @@ function renderTabela() {
     tabela.style.display = 'none';
     semRes.style.display = 'block';
     paginacao.style.display = 'none';
-    return;
-  }
-
-  if (FILTRADOS.length > LIMITE_SEM_TERMO && busca.length < MIN_CHARS) {
-    mostrarEstado('<p><strong>Refine sua busca</strong></p><p style="margin-top:8px">Digite ao menos ' + MIN_CHARS + ' letras do sobrenome para exibir os resultados (' + FILTRADOS.length.toLocaleString('pt-BR') + ' registros correspondem ao filtro atual).</p>');
     return;
   }
 
@@ -786,15 +764,6 @@ function filtrar() {
   var busca = document.getElementById('busca-sobrenome').value.trim().toLowerCase();
   var consulado = document.getElementById('filtro-consulado').value;
 
-  if (!CARREGADO) {
-    if (!busca && !consulado) {
-      mostrarEstado(mensagemInicial());
-      return;
-    }
-    carregarDados(filtrar);
-    return;
-  }
-
   FILTRADOS = DADOS.filter(function(r) {
     var matchBusca = !busca ||
       (r.sobrenome && r.sobrenome.toLowerCase().indexOf(busca) !== -1) ||
@@ -815,26 +784,18 @@ function filtrar() {
   renderTabela();
 }
 
-function carregarDados(cb) {
-  if (CARREGANDO) return;
-  CARREGANDO = true;
-  mostrarEstado('<div class="spinner"></div>Carregando base de dados...');
-  fetch('matriculas-consulares.json')
-    .then(function(r) { return r.json(); })
-    .then(function(data) {
-      DADOS = data;
-      CARREGADO = true;
-      CARREGANDO = false;
-      if (cb) cb();
-    })
-    .catch(function(err) {
-      mostrarEstado('<p style="color:#c00">Erro ao carregar os dados. Por favor, recarregue a página.</p>');
-      CARREGANDO = false;
-      console.error(err);
-    });
-}
-
-mostrarEstado(mensagemInicial());
+fetch('matriculas-consulares.json')
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    DADOS = data;
+    FILTRADOS = data;
+    document.getElementById('loading').style.display = 'none';
+    renderTabela();
+  })
+  .catch(function(err) {
+    document.getElementById('loading').innerHTML = '<p style="color:#c00">Erro ao carregar os dados. Por favor, recarregue a página.</p>';
+    console.error(err);
+  });
 
 document.getElementById('busca-sobrenome').addEventListener('input', filtrar);
 document.getElementById('filtro-consulado').addEventListener('change', filtrar);
@@ -842,9 +803,9 @@ document.getElementById('btn-limpar').addEventListener('click', function() {
   document.getElementById('busca-sobrenome').value = '';
   document.getElementById('filtro-consulado').value = '';
   document.getElementById('busca-info').innerHTML = '';
-  FILTRADOS = [];
+  FILTRADOS = DADOS;
   PAG_ATUAL = 1;
-  mostrarEstado(mensagemInicial());
+  renderTabela();
 });
 
 (function(){

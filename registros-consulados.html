@@ -440,10 +440,6 @@ var DATA = [];
 var FILTRADOS = [];
 var PAG_ATUAL = 1;
 var POR_PAG = 50;
-var CARREGADO = false;
-var CARREGANDO = false;
-var MIN_CHARS = 2;
-var LIMITE_SEM_TERMO = 300;
 
 function badge(t){
   if(t==='Casamento') return '<span class="badge-tipo badge-c">Casamento</span>';
@@ -456,10 +452,6 @@ function hl(txt, q){
   var idx = txt.toLowerCase().indexOf(q.toLowerCase());
   if(idx===-1) return txt;
   return txt.slice(0,idx)+'<mark>'+txt.slice(idx,idx+q.length)+'</mark>'+txt.slice(idx+q.length);
-}
-
-function mensagemInicial(){
-  return '<strong>Digite para buscar</strong><p>Informe ao menos '+MIN_CHARS+' letras do nome ou sobrenome, ou selecione um filtro, para consultar a base.</p>';
 }
 
 function mensagem(msg){
@@ -483,11 +475,6 @@ function render(){
 
   if(!FILTRADOS.length){
     mensagem('<strong>Nenhum registro encontrado</strong><p>Tente outros termos ou limpe os filtros.</p>');
-    return;
-  }
-
-  if(FILTRADOS.length > LIMITE_SEM_TERMO && q.length < MIN_CHARS){
-    mensagem('<strong>Refine sua busca</strong><p>Digite ao menos '+MIN_CHARS+' letras do nome ou sobrenome para exibir os resultados ('+FILTRADOS.length.toLocaleString('pt-BR')+' registros correspondem ao filtro atual).</p>');
     return;
   }
 
@@ -540,15 +527,6 @@ function filtrar(){
   var tipo=document.getElementById('filtro-tipo').value;
   var cons=document.getElementById('filtro-consulado').value;
 
-  if(!CARREGADO){
-    if(!q && !tipo && !cons){
-      mensagem(mensagemInicial());
-      return;
-    }
-    carregarDados(filtrar);
-    return;
-  }
-
   FILTRADOS=DATA.filter(function(r){
     var qOk=!q||(r.s&&r.s.toLowerCase().indexOf(q)!==-1)||(r.n&&r.n.toLowerCase().indexOf(q)!==-1)||(r.r&&r.r.toLowerCase().indexOf(q)!==-1)||(r.o&&r.o.toLowerCase().indexOf(q)!==-1);
     return qOk&&(!tipo||r.t===tipo)&&(!cons||r.c===cons);
@@ -559,26 +537,19 @@ function filtrar(){
   render();
 }
 
-function carregarDados(cb){
-  if(CARREGANDO) return;
-  CARREGANDO = true;
-  mensagem('Carregando base de dados...');
-  fetch('registros-consulados.json')
-    .then(function(r){ return r.json(); })
-    .then(function(data){
-      DATA = data;
-      CARREGADO = true;
-      CARREGANDO = false;
-      if(cb) cb();
-    })
-    .catch(function(err){
-      mensagem('<strong style="color:#c00">Erro ao carregar os dados.</strong><p>Por favor, recarregue a página.</p>');
-      CARREGANDO = false;
-      console.error(err);
-    });
-}
+fetch('registros-consulados.json')
+  .then(function(r){ return r.json(); })
+  .then(function(data){
+    DATA = data;
+    FILTRADOS = data.slice();
+    render();
+  })
+  .catch(function(err){
+    mensagem('<strong style="color:#c00">Erro ao carregar os dados.</strong><p>Por favor, recarregue a página.</p>');
+    console.error(err);
+  });
 
-mensagem(mensagemInicial());
+mensagem('Carregando base de dados...');
 document.getElementById('busca').addEventListener('input',function(){clearTimeout(window._t);window._t=setTimeout(filtrar,200);});
 document.getElementById('filtro-tipo').addEventListener('change',filtrar);
 document.getElementById('filtro-consulado').addEventListener('change',filtrar);
@@ -587,8 +558,8 @@ document.getElementById('btn-limpar').addEventListener('click',function(){
   document.getElementById('filtro-tipo').value='';
   document.getElementById('filtro-consulado').value='';
   document.getElementById('busca-info').innerHTML='';
-  FILTRADOS=[]; PAG_ATUAL=1;
-  mensagem(mensagemInicial());
+  FILTRADOS=DATA.slice(); PAG_ATUAL=1;
+  render();
 });
 
 (function(){
