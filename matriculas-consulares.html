@@ -437,6 +437,27 @@ footer {
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
+.aviso-protecao {
+  max-width: 1100px; margin: 0 auto; padding: 0 48px 10px;
+  font-size: 0.76rem; color: #8a6d00; display: flex; gap: 8px; align-items: flex-start; line-height: 1.5;
+}
+.aviso-protecao svg { flex-shrink: 0; margin-top: 2px; }
+.tabela-wrap, .tabela-wrap * { user-select: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; }
+.toast-direitos {
+  position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+  background: #15181b; color: #fff; padding: 12px 22px; border-radius: 6px;
+  font-family: 'Inter', sans-serif; font-size: 0.8rem; line-height: 1.4;
+  z-index: 9999; box-shadow: 0 4px 16px rgba(0,0,0,0.3); max-width: min(90vw, 460px);
+  text-align: center; display: none;
+}
+@media print {
+  .busca-section, .tabela-section { display: none !important; }
+  body::after {
+    content: "A consulta desta base é exclusiva do site arquivos.passaportealemao.com. Impressão ou extração dos resultados não é permitida. Para uso autorizado, contate hannover@passaportealemao.com.br.";
+    display: block; padding: 40px; font-family: 'Inter', sans-serif; font-size: 0.85rem; color: #555;
+  }
+}
+
 @media (max-width: 768px) {
   .site-header-inner { padding: 0 20px; }
   .site-nav { gap: 14px; }
@@ -479,7 +500,7 @@ footer {
       <p class="hero-desc">Base de dados com imigrantes alemães inscritos nas Matrículas Consulares dos Consulados da Alemanha no Brasil. Se o nome do seu antepassado constar nesta lista, isso pode ser determinante para o seu processo de cidadania alemã.</p>
       <div class="hero-stats">
         <div class="stat">
-          <span class="num" id="total-registros">—</span>
+          <span class="num">9.694</span>
           <span class="lbl">Registros indexados</span>
         </div>
         <div class="stat">
@@ -543,6 +564,10 @@ footer {
   </div>
 </section>
 
+<div class="aviso-protecao">
+  <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+  <span>Base de dados protegida por direitos autorais. A extração, cópia ou redistribuição em massa deste conteúdo é proibida sem autorização prévia da Hannover Cidadania Alemã.</span>
+</div>
 <section class="busca-section">
   <div class="busca-grid">
     <div class="campo-grupo">
@@ -643,6 +668,10 @@ var DADOS = [];
 var FILTRADOS = [];
 var PAG_ATUAL = 1;
 var POR_PAG = 50;
+var CARREGADO = false;
+var CARREGANDO = false;
+var MIN_CHARS = 2;
+var LIMITE_SEM_TERMO = 300;
 
 var badges = {
   'Porto Alegre': 'badge-poa',
@@ -664,20 +693,41 @@ function highlight(text, query) {
     text.slice(idx + query.length);
 }
 
+function mostrarEstado(html) {
+  document.getElementById('tabela').style.display = 'none';
+  document.getElementById('sem-resultado').style.display = 'none';
+  document.getElementById('paginacao').style.display = 'none';
+  var loading = document.getElementById('loading');
+  loading.style.display = 'block';
+  loading.innerHTML = html;
+}
+
+function mensagemInicial() {
+  return '<p><strong>Digite para buscar</strong></p><p style="margin-top:8px">Informe ao menos ' + MIN_CHARS + ' letras do sobrenome, ou selecione um consulado, para consultar a base.</p>';
+}
+
 function renderTabela() {
   var tbody = document.getElementById('tbody');
   var tabela = document.getElementById('tabela');
   var semRes = document.getElementById('sem-resultado');
   var paginacao = document.getElementById('paginacao');
+  var loading = document.getElementById('loading');
   var busca = document.getElementById('busca-sobrenome').value.trim();
 
   if (FILTRADOS.length === 0) {
+    loading.style.display = 'none';
     tabela.style.display = 'none';
     semRes.style.display = 'block';
     paginacao.style.display = 'none';
     return;
   }
 
+  if (FILTRADOS.length > LIMITE_SEM_TERMO && busca.length < MIN_CHARS) {
+    mostrarEstado('<p><strong>Refine sua busca</strong></p><p style="margin-top:8px">Digite ao menos ' + MIN_CHARS + ' letras do sobrenome para exibir os resultados (' + FILTRADOS.length.toLocaleString('pt-BR') + ' registros correspondem ao filtro atual).</p>');
+    return;
+  }
+
+  loading.style.display = 'none';
   semRes.style.display = 'none';
   tabela.style.display = 'table';
   paginacao.style.display = 'flex';
@@ -736,6 +786,15 @@ function filtrar() {
   var busca = document.getElementById('busca-sobrenome').value.trim().toLowerCase();
   var consulado = document.getElementById('filtro-consulado').value;
 
+  if (!CARREGADO) {
+    if (!busca && !consulado) {
+      mostrarEstado(mensagemInicial());
+      return;
+    }
+    carregarDados(filtrar);
+    return;
+  }
+
   FILTRADOS = DADOS.filter(function(r) {
     var matchBusca = !busca ||
       (r.sobrenome && r.sobrenome.toLowerCase().indexOf(busca) !== -1) ||
@@ -756,19 +815,26 @@ function filtrar() {
   renderTabela();
 }
 
-fetch('https://raw.githubusercontent.com/hannovercidadania/hannover-data/main/matriculas-consulares.json')
-  .then(function(r) { return r.json(); })
-  .then(function(data) {
-    DADOS = data;
-    FILTRADOS = data;
-    document.getElementById('total-registros').textContent = data.length.toLocaleString('pt-BR');
-    document.getElementById('loading').style.display = 'none';
-    renderTabela();
-  })
-  .catch(function(err) {
-    document.getElementById('loading').innerHTML = '<p style="color:#c00">Erro ao carregar os dados. Por favor, recarregue a página.</p>';
-    console.error(err);
-  });
+function carregarDados(cb) {
+  if (CARREGANDO) return;
+  CARREGANDO = true;
+  mostrarEstado('<div class="spinner"></div>Carregando base de dados...');
+  fetch('matriculas-consulares.json')
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      DADOS = data;
+      CARREGADO = true;
+      CARREGANDO = false;
+      if (cb) cb();
+    })
+    .catch(function(err) {
+      mostrarEstado('<p style="color:#c00">Erro ao carregar os dados. Por favor, recarregue a página.</p>');
+      CARREGANDO = false;
+      console.error(err);
+    });
+}
+
+mostrarEstado(mensagemInicial());
 
 document.getElementById('busca-sobrenome').addEventListener('input', filtrar);
 document.getElementById('filtro-consulado').addEventListener('change', filtrar);
@@ -776,10 +842,31 @@ document.getElementById('btn-limpar').addEventListener('click', function() {
   document.getElementById('busca-sobrenome').value = '';
   document.getElementById('filtro-consulado').value = '';
   document.getElementById('busca-info').innerHTML = '';
-  FILTRADOS = DADOS;
+  FILTRADOS = [];
   PAG_ATUAL = 1;
-  renderTabela();
+  mostrarEstado(mensagemInicial());
 });
+
+(function(){
+  var toast = document.createElement('div');
+  toast.className = 'toast-direitos';
+  document.body.appendChild(toast);
+  var toastTimer;
+  function avisar(msg){
+    toast.textContent = msg;
+    toast.style.display = 'block';
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ toast.style.display = 'none'; }, 3500);
+  }
+  var MSG_COPIA = 'Esta base de dados é protegida por direitos autorais da Hannover Cidadania Alemã / WK Serviços de Apoio Adm. Ltda. Reprodução ou extração em massa não autorizada é proibida.';
+  var tabelaWrap = document.querySelector('.tabela-wrap');
+  if (tabelaWrap) {
+    tabelaWrap.addEventListener('contextmenu', function(e){
+      e.preventDefault();
+      avisar(MSG_COPIA);
+    });
+  }
+})();
 </script>
 </body>
 </html>
