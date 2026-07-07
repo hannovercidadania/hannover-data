@@ -294,9 +294,11 @@ body {
   background: #fff;
   border: 1px solid var(--borda);
   border-radius: 6px;
-  overflow: hidden;
+  overflow-x: auto;
+  overflow-y: visible;
+  -webkit-overflow-scrolling: touch;
 }
-table { width: 100%; border-collapse: collapse; font-size: 0.83rem; }
+table { width: 100%; min-width: 950px; border-collapse: collapse; font-size: 0.83rem; }
 thead th {
   background: #2b4a38;
   color: #fff;
