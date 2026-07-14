@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Registros de Passaportes dos Consulados Alemães no Brasil — Hannover Cidadania Alemã</title>
+<meta name="description" content="Base de dados com 36.275 registros de emissão de passaportes (Paßregister) dos Consulados da Alemanha no Brasil (1895–1942). Transcrição e indexação exclusiva da Hannover Cidadania Alemã a partir dos originais do Politisches Archiv (PAAA), Berlim.">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap');
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root{--vermelho:#ff293e;--amarelo:#ffd56c;--verde:#437057;--preto:#15181b;--creme:#f5f2ec;--cinza:#c8c5bd;--texto:#2a2d30;--borda:#ddd9d0}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--creme);color:var(--texto);min-height:100vh}
+.site-header{background:#fff;border-bottom:1px solid #e8e4dc;position:sticky;top:0;z-index:100;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.site-header-inner{max-width:1180px;margin:0 auto;padding:0 48px;height:68px;display:flex;align-items:center;justify-content:space-between}
+.site-logo img{display:block}
+.site-nav{display:flex;align-items:center;gap:28px}
+.site-nav a{font-size:.85rem;font-weight:500;color:#2a2d30;text-decoration:none;transition:color .15s}
+.site-nav a:hover{color:#437057}
+.site-nav a.nav-cta{background:#ff293e;color:#fff;padding:8px 18px;border-radius:4px;font-size:.82rem}
+.site-nav a.nav-cta:hover{background:#e0001f}
+.hero{background:#2b4a38;overflow:hidden}
+.hero-inner{max-width:1180px;margin:0 auto;padding:72px 48px 64px;display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
+.hero-eyebrow{font-size:10px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--amarelo);margin-bottom:20px;display:block}
+.hero h1{font-family:'EB Garamond',serif;font-size:clamp(2rem,4vw,3.2rem);font-weight:400;color:#fff;line-height:1.15;margin-bottom:20px}
+.hero h1 em{font-style:italic;color:var(--amarelo)}
+.hero-desc{font-size:.9rem;line-height:1.75;color:#c8c5bd;margin-bottom:36px}
+.hero-stats{display:flex;gap:32px;flex-wrap:wrap}
+.stat{border-left:2px solid var(--vermelho);padding-left:16px}
+.stat .num{font-family:'EB Garamond',serif;font-size:2rem;font-weight:600;color:var(--amarelo);line-height:1;display:block}
+.stat .lbl{font-size:.72rem;color:#9a968c;text-transform:uppercase;letter-spacing:.08em;margin-top:4px;display:block}
+.hero-right{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:6px;padding:32px}
+.proveniencia-label{font-size:10px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--vermelho);margin-bottom:16px;display:block}
+.proveniencia-texto{font-family:'EB Garamond',serif;font-size:1.05rem;line-height:1.75;color:#d8d5cd;font-style:italic}
+.proveniencia-texto strong{font-style:normal;color:#fff;font-weight:500}
+.proveniencia-assinatura{margin-top:20px;padding-top:16px;border-top:1px solid rgba(255,255,255,.12);font-size:.78rem;color:#b0aba0;line-height:1.5}
+.proveniencia-assinatura strong{color:#e8e4dc}
+.stripe{height:3px;background:linear-gradient(90deg,var(--vermelho) 0%,var(--amarelo) 60%,var(--verde) 100%)}
+.contexto-section{background:#fff;border-bottom:1px solid var(--borda)}
+.contexto-inner{max-width:1180px;margin:0 auto;padding:48px 48px 40px}
+.contexto-intro{font-size:.95rem;color:#555;line-height:1.75;margin-bottom:32px;max-width:820px}
+.contexto-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-bottom:28px}
+.ctx-bloco h3{font-family:'EB Garamond',serif;font-size:1.15rem;font-weight:500;color:var(--preto);margin-bottom:12px}
+.ctx-bloco p{font-size:.88rem;line-height:1.75;color:#555;margin-bottom:12px}
+.ctx-bloco ul{padding-left:18px;font-size:.86rem;color:#555;line-height:1.9}
+.ctx-bloco ul a{color:var(--verde);text-decoration:none;font-weight:500}
+.ctx-bloco ul a:hover{text-decoration:underline}
+.ctx-destaque-box{background:#f0f7f3;border-left:3px solid var(--verde);padding:12px 16px;border-radius:0 4px 4px 0;font-size:.84rem;color:#2d5a3d;line-height:1.6;margin-top:16px}
+.ctx-alerta{display:flex;gap:12px;align-items:flex-start;background:#fffbf0;border:1px solid #f0dfa0;border-radius:5px;padding:16px 20px;font-size:.82rem;color:#6b5a2a;line-height:1.65}
+.ctx-alerta strong{color:#5a4a1a}
+.busca-section{max-width:1180px;margin:0 auto 24px;padding:28px 48px 0}
+.busca-grid{display:grid;grid-template-columns:1.5fr 1fr 1fr auto;gap:12px;align-items:end}
+.campo-grupo label{display:block;font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#888;margin-bottom:6px}
+.campo-grupo input,.campo-grupo select{width:100%;padding:11px 16px;border:1.5px solid var(--borda);border-radius:5px;font-size:.9rem;font-family:'Inter',sans-serif;background:#fff;color:var(--preto);outline:none;transition:border-color .2s}
+.campo-grupo input:focus,.campo-grupo select:focus{border-color:var(--vermelho)}
+.campo-grupo input::placeholder{color:#bbb}
+.btn-limpar{padding:11px 20px;background:transparent;border:1.5px solid var(--borda);border-radius:5px;font-size:.82rem;font-family:'Inter',sans-serif;color:#888;cursor:pointer;white-space:nowrap;transition:all .15s}
+.btn-limpar:hover{border-color:var(--vermelho);color:var(--vermelho)}
+.busca-info{font-size:.78rem;color:#999;margin-top:10px}
+.busca-info strong{color:var(--verde)}
+.tabela-section{max-width:1180px;margin:0 auto 80px;padding:0 48px}
+.tabela-wrap{background:#fff;border:1px solid var(--borda);border-radius:6px;overflow-x:auto;overflow-y:visible;-webkit-overflow-scrolling:touch}
+table{width:100%;min-width:1050px;border-collapse:collapse;font-size:.83rem;table-layout:fixed}
+thead th{background:#2b4a38;color:#fff;font-weight:500;font-size:.68rem;letter-spacing:.05em;text-transform:uppercase;padding:12px 10px;text-align:left;white-space:normal;line-height:1.25;vertical-align:bottom;position:sticky;top:0;cursor:pointer}
+thead th:hover{background:#356048}
+tbody tr.linha{border-bottom:1px solid var(--borda);transition:background .1s;cursor:pointer}
+tbody tr.linha:hover{background:#faf9f6}
+tbody td{padding:10px 10px;color:var(--texto);vertical-align:top;line-height:1.4;overflow-wrap:break-word;word-break:break-word}
+tbody td.nome{font-family:'EB Garamond',serif;font-size:1rem;font-weight:500;color:var(--preto)}
+tbody td.data-nasc{color:var(--verde);font-weight:500;font-size:.8rem}
+.folio{color:#999;font-size:.72rem;font-family:ui-monospace,monospace;word-break:break-all}
+tr.detalhe td{background:#fbfaf6;font-size:.8rem;color:#555;padding:6px 16px 14px 16px;border-bottom:1px solid var(--borda)}
+tr.detalhe dl{display:grid;grid-template-columns:auto 1fr;gap:2px 12px;max-width:900px}
+tr.detalhe dt{color:#999;font-weight:600;font-size:.72rem;text-transform:uppercase;letter-spacing:.04em}
+tr.detalhe dd{margin:0;color:#333}
+.badge-consulado{display:inline-block;padding:2px 8px;border-radius:3px;font-size:.7rem;font-weight:600;letter-spacing:0;white-space:normal;line-height:1.3}
+.badge-poa{background:#e8f4ee;color:#2d6b46}.badge-rj{background:#e8eef8;color:#1e3a6e}.badge-sp{background:#f8e8e8;color:#8b1a1a}
+.badge-rec{background:#fff3e0;color:#8b5e00}.badge-bel{background:#e8f0f8;color:#1a4a7a}.badge-joi{background:#f0e8f8;color:#5a2d8b}
+.badge-jf{background:#f8f0e8;color:#8b5a1a}.badge-san{background:#e8f8f4;color:#1a6b5a}.badge-bah{background:#fdecec;color:#a12b2b}
+.badge-rgs{background:#eef3ea;color:#4a6b2d}.badge-sfs{background:#eaf2f6;color:#25607d}.badge-out{background:#f5f5f5;color:#555}
+mark{background:#fff3cd;color:inherit;border-radius:2px;padding:0 1px}
+.flag{display:inline-block;padding:2px 8px;border-radius:11px;font-size:.66rem;font-weight:600;white-space:nowrap;letter-spacing:0}
+.flag-de{background:#e6f3ec;color:#1f6b3f;border:1px solid #b8ddc7}
+.flag-at{background:#fdf1e0;color:#8a5a12;border:1px solid #ecd3a8}
+.flag-for{background:#f8e8e8;color:#9a2020;border:1px solid #e6bcbc}
+.flag-vfor{background:#f4f1ea;color:#7a6a3a;border:1px solid #ddd3bd}
+.flag-verif{background:#f2f2f2;color:#999;border:1px solid #e2e2e2}
+.hero-nota{margin-top:-16px;margin-bottom:36px;background:rgba(255,41,62,.12);border:1px solid rgba(255,213,108,.35);border-left:3px solid var(--amarelo);border-radius:0 5px 5px 0;padding:14px 18px;font-size:.82rem;line-height:1.65;color:#f3ede0}
+.hero-nota strong{color:var(--amarelo);font-weight:600}
+.ctx-alerta-forte{display:flex;gap:12px;align-items:flex-start;background:#fdecec;border:1px solid #e6b8b8;border-left:3px solid var(--vermelho);border-radius:5px;padding:16px 20px;font-size:.84rem;color:#7a2020;line-height:1.7;margin-top:16px}
+.ctx-alerta-forte strong{color:#8b1a1a}
+.flag-legenda{background:#fbfaf6;border:1px dashed #d8d3c6;border-radius:5px;padding:10px 14px;margin-top:10px;font-size:.75rem;line-height:1.6;color:#8a8577}
+.flag-legenda strong{color:var(--verde)}
+tbody td.flag-cell{white-space:nowrap;padding-left:8px;padding-right:8px}
+.paginacao{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-top:1px solid var(--borda);background:#faf9f6;flex-wrap:wrap;gap:12px}
+.pag-info{font-size:.78rem;color:#888}
+.pag-btns{display:flex;gap:6px;flex-wrap:wrap}
+.pag-btn{padding:6px 14px;border:1px solid var(--borda);border-radius:4px;background:#fff;font-size:.78rem;font-family:'Inter',sans-serif;cursor:pointer;transition:all .15s;color:var(--texto)}
+.pag-btn:hover:not(:disabled){border-color:var(--vermelho);color:var(--vermelho)}
+.pag-btn:disabled{opacity:.4;cursor:not-allowed}
+.pag-btn.active{background:var(--vermelho);color:#fff;border-color:var(--vermelho)}
+.sem-resultado{text-align:center;padding:64px 32px;color:#aaa}
+.sem-resultado p{margin-top:8px;font-size:.85rem}
+.aviso-protecao{max-width:1180px;margin:0 auto;padding:0 48px 10px;font-size:.76rem;color:#8a6d00;display:flex;gap:8px;align-items:flex-start;line-height:1.5}
+.aviso-protecao svg{flex-shrink:0;margin-top:2px}
+.tabela-wrap,.tabela-wrap *{user-select:none;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none}
+.toast-direitos{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#15181b;color:#fff;padding:12px 22px;border-radius:6px;font-size:.8rem;line-height:1.4;z-index:9999;box-shadow:0 4px 16px rgba(0,0,0,.3);max-width:min(90vw,460px);text-align:center;display:none}
+@media print{.busca-section,.tabela-section{display:none!important}body::after{content:"A consulta desta base é exclusiva do site arquivos.passaportealemao.com. Impressão ou extração dos resultados não é permitida. Para uso autorizado, contate hannover@passaportealemao.com.br.";display:block;padding:40px;font-size:.85rem;color:#555}}
+.cta{background:var(--verde);padding:64px 48px;text-align:center}
+.cta h2{font-family:'EB Garamond',serif;font-size:clamp(1.6rem,3vw,2.4rem);font-weight:400;color:#fff;margin-bottom:12px}
+.cta p{color:rgba(255,255,255,.7);font-size:.92rem;margin-bottom:28px;line-height:1.7}
+.cta-btn{display:inline-block;background:var(--amarelo);color:var(--preto);font-size:.88rem;font-weight:600;text-decoration:none;padding:13px 32px;border-radius:4px;transition:background .2s}
+.cta-btn:hover{background:#ffca40}
+.rodape-direitos{background:var(--creme);border-top:1px solid var(--borda);padding:40px 48px}
+.rodape-direitos-inner{max-width:1180px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+footer{background:#fff;border-top:1px solid #e8e4dc;padding:28px 48px}
+.footer-inner{max-width:1180px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:32px;flex-wrap:wrap}
+.footer-links{display:flex;gap:20px;flex-wrap:wrap}
+.footer-links a{font-size:.78rem;color:#666;text-decoration:none}
+.footer-links a:hover{color:#437057}
+.footer-info{font-size:.72rem;color:#888;line-height:1.6;text-align:right}
+@media (max-width:768px){
+.site-header-inner{padding:0 20px}.site-nav{gap:14px}.site-nav a:not(.nav-cta){display:none}
+.hero-inner{grid-template-columns:1fr;gap:32px;padding:48px 24px}.contexto-grid{grid-template-columns:1fr}.contexto-inner{padding:32px 20px}
+.busca-section,.tabela-section{padding-left:20px;padding-right:20px}.busca-grid{grid-template-columns:1fr}.cta{padding:48px 24px}
+.rodape-direitos{padding:32px 20px}footer{padding:24px}.footer-inner{flex-direction:column;align-items:flex-start}.footer-info{text-align:left}
+table{font-size:.75rem}thead th,tbody td{padding:8px 10px}}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <div class="site-header-inner">
+    <a href="https://passaportealemao.com.br" class="site-logo">
+      <img src="https://img1.wsimg.com/isteam/ip/0b6df6b8-acb0-4ef6-951c-cd524b1a5063/LOGO%20HORIZONTAL%20ALT%201-d5ef0de.png/:/rs=w:211,h:101,cg:true,m/cr=w:211,h:101/qt=q:95" alt="Hannover Cidadania Alemã" height="52">
+    </a>
+    <nav class="site-nav">
+      <a href="https://passaportealemao.com.br">Página inicial</a>
+      <a href="https://passaportealemao.com.br/cidadania-alem%C3%A3">Cidadania Alemã</a>
+      <a href="https://passaportealemao.com.br/marque-sua-consulta" class="nav-cta">Marque sua Consulta</a>
+    </nav>
+  </div>
+</header>
+<header class="hero">
+  <div class="hero-inner">
+    <div class="hero-left">
+      <span class="hero-eyebrow">Hannover Cidadania Alemã · passaportealemao.com.br</span>
+      <h1>Registros de Passaportes<br><em>dos Consulados Alemães no Brasil</em></h1>
+      <p class="hero-desc">Base de dados com registros de emissão e revalidação de passaportes (Paßregister) lavrados pelos Consulados da Alemanha no Brasil. Se o seu antepassado consta nesta lista, isso pode indicar a manutenção do vínculo com a Alemanha e ser relevante para o seu processo de cidadania alemã.</p>
+      <p class="hero-nota"><strong>Atenção:</strong> constar nesta lista não significa, por si só, ser cidadão alemão. Os consulados também registravam <strong>estrangeiros que solicitavam visto</strong> para viajar à Alemanha. É indispensável verificar as informações integrais de cada registro antes de qualquer conclusão.</p>
+      <div class="hero-stats">
+        <div class="stat"><span class="num" id="total-registros">—</span><span class="lbl">Registros indexados</span></div>
+        <div class="stat"><span class="num">11</span><span class="lbl">Consulados</span></div>
+        <div class="stat"><span class="num">1895&#8211;1942</span><span class="lbl">Período coberto</span></div>
+      </div>
+    </div>
+    <div class="hero-right">
+      <span class="proveniencia-label">Proveniência e exclusividade</span>
+      <p class="proveniencia-texto">
+        Os originais destes registros integram o <strong>Arquivo Político do Ministério das Relações Exteriores da Alemanha (Politisches Archiv des Auswärtigen Amts), em Berlim</strong> — <strong>Bestand AB 2</strong>. A fotografia, transcrição paleográfica (escrita <em>Kurrent</em>) e indexação desta base foram integralmente realizadas pela <strong>Hannover Cidadania Alemã</strong>, escritório do Dr. Fabio Werlang.
+      </p>
+      <div class="proveniencia-assinatura">
+        <strong>Dr. Fabio Werlang</strong><br>OAB/PR 32.133 · OA Portugal 64569L<br>Hannover Cidadania Alemã
+      </div>
+    </div>
+  </div>
+</header>
+<div class="stripe"></div>
+<section class="contexto-section">
+  <div class="contexto-inner">
+    <div class="contexto-intro">
+      <p>Listamos abaixo os registros de passaportes que os Consulados alemães no Brasil emitiram ou revalidaram e que sobreviveram até hoje. Cada linha traz o nome, dados de nascimento, profissão e residência do titular, além do consulado, do período e do fólio (imagem) do documento original.</p>
+    </div>
+    <div class="contexto-grid">
+      <div class="ctx-bloco">
+        <h3>Por que o registro de passaporte importa?</h3>
+        <p>A emissão ou revalidação de um passaporte alemão a um imigrante no Brasil é <strong>evidência da manutenção da nacionalidade alemã</strong> do seu antepassado, elemento frequentemente decisivo na instrução de um processo de cidadania alemã.</p>
+        <div class="ctx-destaque-box">
+          Encontrou o nome? Entre em contato conosco para uma análise de viabilidade — a presença nestes registros costuma fortalecer o pedido.
+        </div>
+      </div>
+      <div class="ctx-bloco">
+        <h3>Não encontrou o nome?</h3>
+        <p>A ausência não significa, necessariamente, que seu antepassado não tinha vínculo com a Alemanha. Outros comprovantes podem ser apresentados, como:</p>
+        <ul>
+          <li>Documento de viagem alemão / passaporte</li>
+          <li>Certificado de cidadania (Staatsangehörigkeitsausweis, Heimatschein)</li>
+          <li><a href="https://passaportealemao.com.br/matricula-consular">Matrículas Consulares</a> dos Consulados alemães</li>
+          <li><a href="https://passaportealemao.com.br/registros-civis-de-berlim">Registros civis</a> (nascimento, casamento e óbito) consulares</li>
+        </ul>
+      </div>
+    </div>
+    <div class="ctx-alerta-forte">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="flex-shrink:0;margin-top:2px"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      <div><strong>Esta base pode conter erros, falhas e omissões.</strong> Os documentos são manuscritos em escrita alemã antiga (<em>Kurrent</em>), muitas vezes desbotados ou danificados, e foram transcritos por leitura paleográfica sujeita a equívocos. Leituras incertas estão assinaladas com <strong>[?]</strong>. Nomes podem estar grafados de forma diversa, registros podem faltar e dados podem estar incompletos. <strong>Nenhuma informação aqui exibida substitui a conferência da imagem original</strong> (coluna Fundo, arquivo PAAA). Use esta base apenas como ponto de partida de pesquisa, jamais como prova isolada.</div>
+    </div>
+    <div class="ctx-alerta" style="margin-top:16px">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="flex-shrink:0;margin-top:2px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+      <div><strong>Nem todos os registrados eram alemães.</strong> Além de cidadãos alemães, os consulados também registravam <strong>estrangeiros (inclusive brasileiros) que solicitavam visto</strong> para viajar à Alemanha. A coluna <strong>“Cidadania”</strong> apresenta uma classificação automática e meramente orientativa: marca “Alemão” quando o livro registra nacionalidade alemã, matrícula consular, Heimatschein, documento militar alemão ou documento emitido por autoridade alemã, ou, na falta destes, quando a pessoa nasceu em cidade alemã (presunção que cede diante de nacionalidade estrangeira expressa). <strong>Não é determinação de nacionalidade nem parecer jurídico, e pode haver exceções.</strong> Clique em qualquer linha para ver os detalhes completos do registro.</div>
+    </div>
+  </div>
+</section>
+<div class="aviso-protecao">
+  <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+  <span>Base de dados protegida por direitos autorais. A extração, cópia ou redistribuição em massa deste conteúdo é proibida sem autorização prévia da Hannover Cidadania Alemã.</span>
+</div>
+<section class="busca-section">
+  <div class="busca-grid">
+    <div class="campo-grupo">
+      <label for="busca">Buscar por nome, nascimento, profissão, residência ou observações</label>
+      <input type="text" id="busca" placeholder="Ex: Müller, Hamburg, Kaufmann, Matrikel, Reisepass..." autocomplete="off">
+    </div>
+    <div class="campo-grupo">
+      <label for="filtro-consulado">Filtrar por consulado</label>
+      <select id="filtro-consulado"><option value="">Todos os consulados</option></select>
+    </div>
+    <div class="campo-grupo">
+      <label for="filtro-flag">Cidadania (indício)*</label>
+      <select id="filtro-flag"><option value="">Todos</option><option value="Alemão">Alemão</option><option value="Austríaco">Austríaco</option><option value="Estrangeiro">Estrangeiro</option><option value="Estrangeiro (visto)?">Estrangeiro (visto)</option><option value="Verificar">A verificar</option></select>
+    </div>
+    <button class="btn-limpar" id="btn-limpar">Limpar filtros</button>
+  </div>
+  <div class="busca-info" id="busca-info"></div>
+  <div class="flag-legenda">* <strong>Cidadania (indício):</strong> classificação automática e apenas orientativa. É atribuído “Alemão” quando o livro registra nacionalidade alemã (<em>Staatsangehörigkeit</em> ou <em>Reichsangehörigkeit</em>), quando há <strong>inscrição na Matrikel consular</strong>, <strong>Heimatschein</strong>, <strong>documento de serviço militar alemão</strong> ou <strong>documento emitido por autoridade alemã na Alemanha</strong>, ou, na falta destes, quando o <strong>local de nascimento é uma cidade alemã</strong> (presunção que cede diante de nacionalidade estrangeira expressa). “Estrangeiro (visto)” indica provável solicitação de visto para viajar à Alemanha. <strong>Nada disto constitui determinação de nacionalidade nem parecer jurídico</strong>, podendo haver exceções. Confirme sempre no registro integral (Fundo).</div>
+</section>
+<section class="tabela-section">
+  <div class="tabela-wrap">
+    <table id="tabela">
+      <thead><tr id="hdr"></tr></thead>
+      <tbody id="tbody"></tbody>
+    </table>
+    <div class="sem-resultado" id="sem-resultado" style="display:none"><strong>Nenhum registro encontrado</strong><p>Tente outros termos ou limpe os filtros.</p></div>
+    <div class="paginacao" id="paginacao"><span class="pag-info" id="pag-info"></span><div class="pag-btns" id="pag-btns"></div></div>
+  </div>
+</section>
+<section class="cta">
+  <h2>Encontrou seu antepassado?</h2>
+  <p>A emissão de passaporte pelo consulado alemão é uma evidência importante para o processo de cidadania.<br>Fale com a Hannover para uma análise de viabilidade gratuita.</p>
+  <a href="https://forms.clickup.com/9007146942/f/8cdw9xy-1633/0OF6W5CB2YMPUU2BK4" class="cta-btn" target="_blank" rel="noopener">Solicitar análise gratuita</a>
+</section>
+<div class="rodape-direitos">
+  <div class="rodape-direitos-inner">
+    <div style="background:#15181b;border-radius:8px;padding:22px 26px;display:flex;gap:14px;align-items:flex-start">
+      <div style="flex-shrink:0;font-size:20px;color:#ffd56c;margin-top:2px">&copy;</div>
+      <div>
+        <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#ffd56c;margin-bottom:6px">Indexação e direitos autorais</p>
+        <p style="font-size:12px;line-height:1.65;color:rgba(255,255,255,.6)">A pesquisa, fotografia, transcrição e indexação destes registros foram realizadas pela <strong style="color:rgba(255,255,255,.9)">Hannover Cidadania Alemã</strong>, escritório do <strong style="color:rgba(255,255,255,.9)">Dr. Fabio Werlang</strong> (OAB/PR 32.133). A organização e disponibilização deste banco de dados são propriedade intelectual da <strong style="color:rgba(255,255,255,.9)">WK Serviços de Apoio Adm. Ltda.</strong> (CNPJ 25.049.435/0001-51). É vedada a reprodução ou redistribuição do conjunto de dados sem autorização prévia e citação expressa da fonte. Podem haver erros e omissões; recomenda-se a consulta aos originais.</p>
+      </div>
+    </div>
+  </div>
+</div>
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo"><img src="https://img1.wsimg.com/isteam/ip/0b6df6b8-acb0-4ef6-951c-cd524b1a5063/LOGO%20HORIZONTAL%20ALT%201-d5ef0de.png/:/rs=w:211,h:101,cg:true,m/cr=w:211,h:101/qt=q:95" alt="Hannover Cidadania Alemã" height="40"></div>
+    <div class="footer-links">
+      <a href="https://passaportealemao.com.br">passaportealemao.com.br</a>
+      <a href="https://werlang.de">werlang.de</a>
+      <a href="https://passaportealemao.com.br/contato">Contato</a>
+    </div>
+    <div class="footer-info"><p>Copyright &copy; 2026</p><p>WK Serviços de Apoio Adm. Ltda. · CNPJ 25.049.435/0001-51</p><p><a href="mailto:hannover@passaportealemao.com.br" style="color:#437057">hannover@passaportealemao.com.br</a></p></div>
+  </div>
+</footer>
+<script>
+const FIELDS=["consulado", "periodo", "nr", "nome", "profissao", "nacionalidade", "nasc_local", "data_nasc", "idade", "residencia", "vem_de", "vai_para", "data", "tipo_ato", "obs", "folio", "flag", "flag_base"];
+const CONSULADOS=["Recife", "Bahia", "Belém", "Joinville", "Juiz de Fora", "Porto Alegre", "Rio de Janeiro", "Rio Grande do Sul", "Santos", "São Francisco do Sul", "São Paulo"];
+var DATA=[];
+var NORM=[];
+var TOTAL_BASE=36275;
+const F={};FIELDS.forEach((f,i)=>F[f]=i);
+const BADGE={'Porto Alegre':'badge-poa','Rio de Janeiro':'badge-rj','São Paulo':'badge-sp','Recife':'badge-rec','Belém':'badge-bel','Joinville':'badge-joi','Juiz de Fora':'badge-jf','Santos':'badge-san','Bahia':'badge-bah','Rio Grande do Sul':'badge-rgs','São Francisco do Sul':'badge-sfs'};
+const FLAGCLS={'Alemão':'flag-de','Austríaco':'flag-at','Estrangeiro':'flag-for','Estrangeiro (visto)?':'flag-vfor','Verificar':'flag-verif'};
+const FLAGTXT={'Alemão':'Alemão','Austríaco':'Austríaco','Estrangeiro':'Estrangeiro','Estrangeiro (visto)?':'Estrangeiro (visto)','Verificar':'A verificar'};
+const BASETXT={'nacionalidade':'nacionalidade registrada no livro (Staatsangehörigkeit)','obs':'nacionalidade citada nas observações','reich':'reconhecimento de nacionalidade alemã (Reichsangehörigkeit)','matricula':'inscrição na Matrikel consular (matrícula) — registro reservado a nacionais alemães','heimatschein':'Heimatschein (certidão de origem emitida por autoridade alemã)','militar':'documento de serviço militar alemão (Militärpaß, Landsturm/Landwehr)','profissao':'profissão/função ligada à Alemanha (ex.: cônsul, funcionário ou professor alemão)','doc_alemanha':'passaporte ou documento emitido por autoridade alemã','nascimento':'local de nascimento (cidade alemã) — presunção','visto':'provável pedido de visto (viagem à Alemanha)'};
+function flagBadge(v){if(!v)return '';return '<span class="flag '+(FLAGCLS[v]||'flag-verif')+'">'+esc(FLAGTXT[v]||v)+'</span>'}
+function nrm(s){return (s||'').toLowerCase().normalize('NFKD').replace(/[̀-ͯ]/g,'').replace(/\[\?\]/g,'').replace(/[^a-z0-9]+/g,' ')}
+const SEARCHF=['nome','nasc_local','profissao','residencia','vem_de','vai_para','consulado','nacionalidade','obs'];
+document.getElementById('total-registros').textContent=TOTAL_BASE.toLocaleString('pt-BR');
+const selC=document.getElementById('filtro-consulado');
+const selF=document.getElementById('filtro-flag');
+CONSULADOS.forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=c;selC.appendChild(o)});
+const COLS=[['nome','Nome',170],['flag','Cidadania*',150],['nasc','Nascimento',146],['profissao','Profissão',126],['residencia','Residência',118],['consulado','Consulado',120],['quando','Período · data',116],['folio','Fundo',104]];
+document.getElementById('hdr').innerHTML=COLS.map((c,i)=>'<th data-i="'+i+'" style="width:'+c[2]+'px">'+c[1]+'</th>').join('');
+const tbody=document.getElementById('tbody'),info=document.getElementById('busca-info'),semRes=document.getElementById('sem-resultado'),pagEl=document.getElementById('paginacao');
+let FILT=[], PAG=1, SORT=-1, DIR=1;
+const POR=50;
+function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function hl(s,terms){s=esc(s);for(const t of terms){if(t.length<2)continue;try{s=s.replace(new RegExp('('+t.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi'),'<mark>$1</mark>')}catch(e){}}return s}
+function g(r,f){return r[F[f]]||''}
+function cellVal(r,key){
+  if(key==='nome')return g(r,'nome');
+  if(key==='flag')return g(r,'flag');
+  if(key==='nasc')return [g(r,'data_nasc'),g(r,'nasc_local')].filter(Boolean).join(' · ');
+  if(key==='profissao')return g(r,'profissao');
+  if(key==='residencia')return g(r,'residencia');
+  if(key==='consulado')return g(r,'consulado');
+  if(key==='quando')return [g(r,'periodo'),g(r,'data')].filter(Boolean).join(' · ');
+  if(key==='folio')return g(r,'folio');
+  return '';
+}
+function filtrar(){
+  const qv=document.getElementById('busca').value.trim();
+  const terms=nrm(qv).split(' ').filter(Boolean);
+  const cf=selC.value;
+  const ff=selF.value;
+
+  const out=[];
+  for(let i=0;i<DATA.length;i++){
+    if(cf && DATA[i][F.consulado]!==cf)continue;
+    if(ff && DATA[i][F.flag]!==ff)continue;
+    const n=NORM[i];let ok=true;
+    for(const t of terms){if(n.indexOf(t)<0){ok=false;break}}
+    if(ok)out.push(i);
+  }
+  if(SORT>=0){const k=COLS[SORT][0];out.sort((a,b)=>{const x=cellVal(DATA[a],k).toLowerCase(),y=cellVal(DATA[b],k).toLowerCase();return x<y?-DIR:x>y?DIR:0})}
+  FILT=out;PAG=1;
+
+  info.innerHTML=(qv||cf||ff)?('Encontrados <strong>'+out.length.toLocaleString('pt-BR')+'</strong> registros.'):('Base completa: <strong>'+out.length.toLocaleString('pt-BR')+'</strong> registros. Digite para buscar.');
+  render();
+}
+function render(){
+  const qv=document.getElementById('busca').value.trim();
+  const terms=nrm(qv).split(' ').filter(Boolean);
+  if(!FILT.length){document.getElementById('tabela').style.display='none';semRes.style.display='block';semRes.innerHTML='<strong>Nenhum registro encontrado</strong><p>Tente outros termos ou limpe os filtros.</p>';pagEl.style.display='none';return}
+  document.getElementById('tabela').style.display='table';semRes.style.display='none';pagEl.style.display='flex';
+  const ini=(PAG-1)*POR, fim=Math.min(ini+POR,FILT.length);
+  let html='';
+  for(let k=ini;k<fim;k++){
+    const idx=FILT[k], r=DATA[idx];
+    const bc=BADGE[g(r,'consulado')]||'badge-out';
+    html+='<tr class="linha" data-idx="'+idx+'">'+
+      '<td class="nome">'+hl(g(r,'nome'),terms)+'</td>'+
+      '<td class="flag-cell">'+flagBadge(g(r,'flag'))+'</td>'+
+      '<td class="data-nasc">'+hl(cellVal(r,'nasc'),terms)+'</td>'+
+      '<td>'+hl(g(r,'profissao'),terms)+'</td>'+
+      '<td>'+hl(g(r,'residencia'),terms)+'</td>'+
+      '<td><span class="badge-consulado '+bc+'">'+esc(g(r,'consulado'))+'</span></td>'+
+      '<td>'+esc(cellVal(r,'quando'))+'</td>'+
+      '<td class="folio">'+esc(g(r,'folio'))+'</td>'+
+    '</tr>';
+  }
+  tbody.innerHTML=html;
+  document.getElementById('pag-info').textContent='Mostrando '+(ini+1)+'–'+fim+' de '+FILT.length.toLocaleString('pt-BR')+' registros';
+  const totP=Math.ceil(FILT.length/POR), bt=document.getElementById('pag-btns');bt.innerHTML='';
+  function mk(txt,pg,dis,act){const b=document.createElement('button');b.className='pag-btn'+(act?' active':'');b.textContent=txt;b.disabled=!!dis;b.onclick=function(){PAG=pg;render();document.querySelector('.tabela-section').scrollIntoView({behavior:'smooth',block:'start'})};bt.appendChild(b)}
+  mk('← Anterior',PAG-1,PAG===1,false);
+  let s=Math.max(1,PAG-2),e=Math.min(totP,PAG+2);
+  if(s>1)mk('1',1,false,PAG===1);
+  if(s>2){const sp=document.createElement('span');sp.textContent='…';sp.style.cssText='padding:6px 4px;color:#aaa';bt.appendChild(sp)}
+  for(let p=s;p<=e;p++)mk(String(p),p,false,p===PAG);
+  if(e<totP-1){const sp=document.createElement('span');sp.textContent='…';sp.style.cssText='padding:6px 4px;color:#aaa';bt.appendChild(sp)}
+  if(e<totP)mk(String(totP),totP,false,PAG===totP);
+  mk('Próximo →',PAG+1,PAG===totP,false);
+}
+tbody.addEventListener('click',function(e){
+  const tr=e.target.closest('tr.linha');if(!tr)return;
+  const nx=tr.nextElementSibling;
+  if(nx&&nx.classList.contains('detalhe')){nx.remove();return}
+  document.querySelectorAll('tr.detalhe').forEach(d=>d.remove());
+  const r=DATA[+tr.dataset.idx];
+  const _fb=g(r,'flag_base'),_ind=(FLAGTXT[g(r,'flag')]||g(r,'flag'))+(BASETXT[_fb]?' — base: '+BASETXT[_fb]:'');
+  const campos=[['Nº',g(r,'nr')],['Nacionalidade (Staatsangehörigkeit)',g(r,'nacionalidade')],['Cidadania (indício orientativo, não jurídico)',_ind],['Idade',g(r,'idade')],['Vem de',g(r,'vem_de')],['Vai para',g(r,'vai_para')],['Tipo de ato',g(r,'tipo_ato')],['Data',g(r,'data')],['Observações / documento',g(r,'obs')],['Fundo (referência PAAA)',g(r,'folio')]];
+  const dl=campos.filter(c=>c[1]).map(c=>'<dt>'+c[0]+'</dt><dd>'+esc(c[1])+'</dd>').join('');
+  const d=document.createElement('tr');d.className='detalhe';
+  d.innerHTML='<td colspan="8"><dl>'+dl+'</dl></td>';
+  tr.after(d);
+});
+semRes.innerHTML='Carregando base de dados...';
+fetch('busca-passregister.json')
+  .then(r=>r.json())
+  .then(data=>{
+    DATA=data;
+    NORM=DATA.map(r=>nrm(SEARCHF.map(f=>r[F[f]]||'').join(' ')));
+    filtrar();
+  })
+  .catch(err=>{
+    semRes.innerHTML='<strong style="color:#c00">Erro ao carregar os dados.</strong><p>Por favor, recarregue a página.</p>';
+    console.error(err);
+  });
+document.getElementById('hdr').addEventListener('click',e=>{const th=e.target.closest('th');if(!th)return;const i=+th.dataset.i;if(SORT===i)DIR=-DIR;else{SORT=i;DIR=1}filtrar()});
+let tmr;document.getElementById('busca').addEventListener('input',()=>{clearTimeout(tmr);tmr=setTimeout(filtrar,150)});
+selC.addEventListener('change',filtrar);
+selF.addEventListener('change',filtrar);
+document.getElementById('btn-limpar').addEventListener('click',()=>{document.getElementById('busca').value='';selC.value='';selF.value='';SORT=-1;filtrar()});
+
+(function(){
+  var toast = document.createElement('div');
+  toast.className = 'toast-direitos';
+  document.body.appendChild(toast);
+  var toastTimer;
+  function avisar(msg){
+    toast.textContent = msg;
+    toast.style.display = 'block';
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ toast.style.display = 'none'; }, 3500);
+  }
+  var MSG_COPIA = 'Esta base de dados é protegida por direitos autorais da Hannover Cidadania Alemã / WK Serviços de Apoio Adm. Ltda. Reprodução ou extração em massa não autorizada é proibida.';
+  var tabelaWrap = document.querySelector('.tabela-wrap');
+  if (tabelaWrap) {
+    tabelaWrap.addEventListener('contextmenu', function(e){
+      e.preventDefault();
+      avisar(MSG_COPIA);
+    });
+  }
+})();
+</script>
+</body>
+</html>
