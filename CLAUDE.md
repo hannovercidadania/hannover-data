@@ -13,5 +13,11 @@ Passregister). Sem index.html na raiz: só links profundos.
 - O site (hannover-site) lê `sobrenomes-alemaes.json` e os demais por URL fixa: não renomear nem
   mover arquivos sem atualizar o site.
 
-## Rotina (dois computadores)
-- `git pull --rebase` no início da sessão; perguntar antes de commit e push (push publica).
+## Rotina (dois computadores), automatizada em 31.10.2026
+- **O GitHub é a fonte da verdade.** O gancho de início (`.claude/hooks/inicio-sessao.sh`) faz o
+  `git pull --rebase` sozinho e avisa se houver alteração local, commit sem push ou conflito:
+  se avisar, contar ao Fabio antes de qualquer alteração.
+- Ao concluir, perguntar se pode publicar; com autorização, usar `/publicar` (commit, push na
+  `main`, que publica produção, e conferência do deploy). O gancho de fim avisa o que ficou fora do GitHub.
+- Se o Fabio disser que vai trocar de computador: `/publicar` imediatamente.
+- Nunca editar nem versionar `.env*` (travado em `.claude/settings.json`).
